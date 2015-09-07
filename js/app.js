@@ -3,19 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-var model = {
-    points: [
-        {
+var locations = [{
+        
             type: 'entertainment',            
             name: 'EpiCentre',
             url: 'http://epicentrenc.com/',
             lat: 35.225372,
-            long: -80.841967,
-            highlight: ko.observable(false)
-        }
-    ],
-    currentPoint: ko.observable(null)
-};
+            long: -80.841967            
+            }
+    ];
+
 
 
 
@@ -35,7 +32,7 @@ function initMap() {
     var marker = new google.maps.Marker({
         map: map,
         animation: google.maps.Animation.DROP,
-        position: {lat: model.points[0].lat, lng: model.points[0].long}
+        position: {lat: locations[0].lat, lng: locations[0].long}
     });
   marker.addListener('click', function() {
       infowindow.open(map, marker);
