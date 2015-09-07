@@ -18,6 +18,8 @@ var model = {
     currentPoint: ko.observable(null)
 };
 
+
+
 var map;
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -25,16 +27,22 @@ function initMap() {
         zoom: 16
     });
 
-    var latLong = new google.maps.LatLng(model.points[0].lat + "," + model.points[0].long);
+    var contentString = "Dummy Content";
+
+    var infowindow = new google.maps.InfoWindow({
+        content: contentString
+    });
 
     var marker = new google.maps.Marker({
         map: map,
-        draggable: false,
         animation: google.maps.Animation.DROP,
-        position: {lat: 35.225372, lng: -80.841967}
+        position: {lat: model.points[0].lat, lng: model.points[0].long}
     });
-    marker.setMap(map);
+  marker.addListener('click', function() {
+      infowindow.open(map, marker);
+  });
 }
+
 
 var viewModel = function () {
     var listObservable = ko.observableArray();
