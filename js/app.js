@@ -6,8 +6,7 @@
 var model = {
     points: [
         {
-            type: 'entertainment',
-            iconUrl: 'icons/entertainement.svg',
+            type: 'entertainment',            
             name: 'EpiCentre',
             url: 'http://epicentrenc.com/',
             lat: 35.225372,
