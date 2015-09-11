@@ -18,11 +18,28 @@ var locations = [{
         url: 'http://www.discoveryplace.org/',
         lat: 35.2295793,
         long: -80.8411225
+    }, {
+        type: 'sports',
+        name: 'BB&T Ballpark',
+        url: '',
+        lat: 35.2284356,
+        long: -80.8485039
+    }, {
+        type: 'sports',
+        name: 'Bank of America Stadium',
+        url: 'http://www.panthers.com/',
+        lat: 35.2256295,
+        long: -80.8527401
+    }, {
+        type: 'sports',
+        name: 'Time Warner Cable Arena',
+        url: '',
+        lat: 35.2250475,
+        long: -80.8393389
     }
 ];
 
-var ViewModel = function () {
-    var self = this;
+var ViewModel = function () {   
 
     var map;
 
