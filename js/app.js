@@ -27,6 +27,9 @@ var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 16
     });
 
+for(var i=0; i < locations.length; i++) {
+    
+
 //Create each location as an item
     var items = function (data) {
         var self = this;
@@ -35,23 +38,24 @@ var map = new google.maps.Map(document.getElementById('map'), {
         self.url = ko.observable(data.url);
         self.latLong = ko.observable(new google.maps.LatLng(data.lat, data.long));
 
+console.log(self.latLong);
 //Create markers for each location
-        self.marker = new google.maps.Marker({
-            map: null,
+            var marker = new google.maps.Marker({
+            //map: null,
             animation: google.maps.Animation.DROP,
             position: self.latLong(),
             title: self.name()
         });
 
-
-        marker.addListener('click', function () {
+    };
+       /* marker.addListener('click', function () {
             infowindow.open(map, marker);
-        });
+        }); */
     }
 
     var ViewModel = function () {
             var self = this;
-            self.searchString = ko.observable('');
+            //self.searchString = ko.observable('');
 }
 
 ko.applyBindings(ViewModel);
