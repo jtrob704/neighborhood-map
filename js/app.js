@@ -27,35 +27,21 @@ var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 16
     });
 
+
 for(var i = 0, len = locations.length; i < len; i++) {
     
+var latLong = new google.maps.LatLng(locations[i].lat,locations[i].long);
 
-//Create each location as an item
-    var items = function (data) {
-        var self = this;
-        self.type = ko.observable(data.type);
-        self.name = ko.observable(data.name);
-        self.url = ko.observable(data.url);
-        self.latLong = ko.observable(new google.maps.LatLng(data.lat, data.long));
-
-console.log(self.latLong);
-//Create markers for each location
-            var marker = new google.maps.Marker({
-            //map: null,
-            animation: google.maps.Animation.DROP,
-            position: self.latLong(),
-            title: self.name()
-        });
-
-    };
-       /* marker.addListener('click', function () {
-            infowindow.open(map, marker);
-        }); */
-    }
+var marker = new google.maps.Marker({
+    position: latLong,
+    map: map,
+    title: "Test"
+});
+}
 
     var ViewModel = function () {
             var self = this;
-            //self.searchString = ko.observable('');
-}
+            self.searchString = ko.observable('');
+};
 
 ko.applyBindings(ViewModel);
