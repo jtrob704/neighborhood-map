@@ -27,7 +27,7 @@ var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 16
     });
 
-for(var i=0; i < locations.length; i++) {
+for(var i = 0, len = locations.length; i < len; i++) {
     
 
 //Create each location as an item
