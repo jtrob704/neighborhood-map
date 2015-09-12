@@ -40,7 +40,8 @@ var locations = [{
 ];
 
 var ViewModel = function () {   
-
+    var self = this;
+        
     var map;
 
     function initMap() {
@@ -76,6 +77,8 @@ var ViewModel = function () {
             };
         })(marker, i));
     }
+    
+    self.searchString = ko.observable('');
 };
 
 ko.applyBindings(ViewModel);
