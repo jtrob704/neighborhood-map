@@ -8,18 +8,6 @@
     </head>
     <body>
         <div class="map" id="map"></div>
-        <div class="list">
-            <div class="search">
-                <h1 class="topTitle">Downtown Charlotte, NC</h1>
-                <h2 class="title">Locations:</h2>
-                <input type="text" data-bind="textInput: searchString" placeholder="Filter results" />
-            </div>
-            <div class="places">
-                <ul data-bind="foreach: filteredLocations">
-                    <li><span data-bind="text: name, click: $parent.clickHandler" /></li>
-                </ul>
-            </div>
-        </div>
         <script src="js/knockout-3.3.0.js"></script>
         <script src="js/jquery-2.1.4.min.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClqBpFgtkeGl3dpogUhi6zgrI7a24TXqo"></script>
