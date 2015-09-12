@@ -63,7 +63,8 @@ var ViewModel = function () {
 
         var marker = new google.maps.Marker({
             position: new google.maps.LatLng(locations[i].lat, locations[i].long),
-            map: map
+            map: map,
+            animation: google.maps.Animation.DROP
         });
 
         markers.push(marker);
