@@ -43,7 +43,7 @@ var ViewModel = function () {
     initMap();
 
     var infowindow = new google.maps.InfoWindow({
-        maxWidth: 160
+        maxWidth: 200
     });
 
     var markers = [];
