@@ -6,32 +6,32 @@
 "use strict";
 
 //Add model data
-var locations = [{        
-        name: 'EpiCentre',        
+var locations = [{
+        name: 'EpiCentre',
         lat: 35.225372,
         long: -80.841967
     }, {
-        name: 'Discovery Place',        
+        name: 'Discovery Place',
         lat: 35.2295793,
         long: -80.8411225
     }, {
-        name: 'BB&T Ballpark',        
+        name: 'BB&T Ballpark',
         lat: 35.2284356,
         long: -80.8485039
-    }, {        
-        name: 'Bank of America Stadium',        
+    }, {
+        name: 'Bank of America Stadium',
         lat: 35.2256295,
         long: -80.8527401
-    }, {        
-        name: 'Time Warner Cable Arena',        
+    }, {
+        name: 'Time Warner Cable Arena',
         lat: 35.2250475,
         long: -80.8393389
     }
 ];
 
-var ViewModel = function () {   
+var ViewModel = function () {
     var self = this;
-    
+
     var map;
 
     function initMap() {
@@ -66,8 +66,18 @@ var ViewModel = function () {
                 infowindow.open(map, marker);
             };
         })(marker, i));
-    }
-    
+
+        google.maps.event.addListener(marker, 'click', (function (marker) {
+            return function () {
+                if (marker.getAnimation() !== null) {
+                    marker.setAnimation(null);
+                } else {
+                    marker.setAnimation(google.maps.Animation.BOUNCE);
+                }
+            };
+        })(marker));
+    };
+
     self.searchString = ko.observable('');
 };
 
