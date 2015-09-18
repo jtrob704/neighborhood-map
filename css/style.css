@@ -9,66 +9,66 @@ and open the template in the editor.
 */
 
 h1 {
-	text-align: center;
-	color: blue;
+    text-align: center;
+    color: blue;
 }
 
 #container {
-	width: 100%;
-	min-height: 100%;
-	position: absolute;
+    width: 100%;
+    min-height: 100%;
+    position: absolute;
 }
 
 #map {
-	position: absolute;
-	float: left;
-	width: 70%;
-	height: 80%;
+    display: block;
+    width: 100%;
+    height: 600px;
 }
 
+
 #list {
-	float: right;
-	width: 29%;
-	height: 100%;
+    float: right;
+    width: 29%;
+    height: 100%;
 }
 
 ul {
-	list-style-type: none;
-	padding-left: 15px;
-	margin: 0px;
+    list-style-type: none;
+    padding-left: 15px;
+    margin: 0px;
 }
 
 li {
-	background: white;
+    background: white;
 }
 
 li:nth-child(odd) {
-	background:  #d1d1e0;
+    background:  #d1d1e0;
 }
 
 ul li {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 #map-unavailable {
-	width: 100%;
-	min-height: 100%;
-	position: absolute;
-	z-index: 20;
-	visibility: hidden;
+    width: 100%;
+    min-height: 100%;
+    position: absolute;
+    z-index: 20;
+    visibility: hidden;
 }
 
 .selected, ul li:hover {
-	color: #000;
-	background-color: #ff0;
+    color: #000;
+    background-color: #ff0;
 }
 
 .dialog-wrapper {
-	color: blue;
-	position: relative;
-	width: 80%;
-	height: 80%;
-	z-index: 1041;
-	margin-left: 10%;
-	margin-top: 10%;
+    color: blue;
+    position: relative;
+    width: 80%;
+    height: 80%;
+    z-index: 1041;
+    margin-left: 10%;
+    margin-top: 10%;
 }

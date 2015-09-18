@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-"use strict";
+//"use strict";
 
 //Add model data
 var locations = [{
@@ -34,8 +34,7 @@ var ViewModel = function () {
 
     OAuth.initialize('B9ST_ARNokhVTwx8qOyw-6UXWI8')
     OAuth.popup('instagram').done(function (result) {
-        console.log(result.access_token);
-        // do some stuff with result
+        //console.log(result.access_token);        
     }).fail(function (err) {
         alert("Unable to retrieve data from Instagram");
     });
@@ -51,15 +50,16 @@ var ViewModel = function () {
     initMap();
 
     var infowindow = new google.maps.InfoWindow({
-        maxWidth: 200
+        maxWidth: 600
     });
 
     var markers = [];
 
     for (var i = 0, len = locations.length; i < len; i++) {
 
-        //var latLong = new google.maps.LatLng(locations[i].lat, locations[i].long);
-
+        //var token = result.access_token;
+        var content = "<h4>" + locations[i].name + "</h4>";
+        //console.log(token);
         var marker = new google.maps.Marker({
             position: new google.maps.LatLng(locations[i].lat, locations[i].long),
             map: map,
@@ -70,7 +70,7 @@ var ViewModel = function () {
 
         google.maps.event.addListener(marker, 'click', (function (marker, i) {
             return function () {
-                infowindow.setContent(locations[i].name);
+                infowindow.setContent(content);
                 infowindow.open(map, marker);
             };
         })(marker, i));
@@ -81,10 +81,17 @@ var ViewModel = function () {
                     marker.setAnimation(null);
                 } else {
                     marker.setAnimation(google.maps.Animation.BOUNCE);
+                    stopAnimation(marker)
+                }
+                function stopAnimation(marker) {
+                    setTimeout(function () {
+                        marker.setAnimation(null);
+                    }, 2000);
                 }
             };
         })(marker));
-    };
+    }
+    ;
 
     self.searchString = ko.observable('');
 };
