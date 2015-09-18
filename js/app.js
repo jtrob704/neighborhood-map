@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-"use strict";
+//"use strict";
 
 //Add model data
 var locations = [{
@@ -32,25 +32,31 @@ var locations = [{
 var ViewModel = function () {
     var self = this;
 
+    OAuth.initialize('B9ST_ARNokhVTwx8qOyw-6UXWI8')
+    OAuth.popup('instagram').done(function (result) {
+        console.log(result.access_token);
+        // do some stuff with result
+    }).fail(function (err) {
+        alert("Unable to retrieve data from Instagram");
+    });
+
     var map;
 
     function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
+        map = new google.maps.Map(document.getElementById('map-canvas'), {
             center: {lat: 35.2251901, lng: -80.8465473},
             zoom: 16
         });
     }
-    initMap();
+
 
     var infowindow = new google.maps.InfoWindow({
         maxWidth: 200
     });
 
-    var markers = [];
+    var markers = ko.observableArray([]);
 
     for (var i = 0, len = locations.length; i < len; i++) {
-
-        //var latLong = new google.maps.LatLng(locations[i].lat, locations[i].long);
 
         var marker = new google.maps.Marker({
             position: new google.maps.LatLng(locations[i].lat, locations[i].long),
@@ -76,9 +82,11 @@ var ViewModel = function () {
                 }
             };
         })(marker));
-    };
+    }
+    ;
 
     self.searchString = ko.observable('');
+    google.maps.event.addDomListener(window, 'load', initMap);
 };
 
 ko.applyBindings(ViewModel);
