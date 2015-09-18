@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-//"use strict";
+"use strict";
 
 //Add model data
 var locations = [{
@@ -43,20 +43,22 @@ var ViewModel = function () {
     var map;
 
     function initMap() {
-        map = new google.maps.Map(document.getElementById('map-canvas'), {
+        map = new google.maps.Map(document.getElementById('map'), {
             center: {lat: 35.2251901, lng: -80.8465473},
             zoom: 16
         });
     }
-
+    initMap();
 
     var infowindow = new google.maps.InfoWindow({
         maxWidth: 200
     });
 
-    var markers = ko.observableArray([]);
+    var markers = [];
 
     for (var i = 0, len = locations.length; i < len; i++) {
+
+        //var latLong = new google.maps.LatLng(locations[i].lat, locations[i].long);
 
         var marker = new google.maps.Marker({
             position: new google.maps.LatLng(locations[i].lat, locations[i].long),
@@ -82,11 +84,9 @@ var ViewModel = function () {
                 }
             };
         })(marker));
-    }
-    ;
+    };
 
     self.searchString = ko.observable('');
-    google.maps.event.addDomListener(window, 'load', initMap);
 };
 
 ko.applyBindings(ViewModel);
