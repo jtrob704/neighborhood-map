@@ -34,10 +34,12 @@ var ViewModel = function () {
 
     OAuth.initialize('B9ST_ARNokhVTwx8qOyw-6UXWI8')
     OAuth.popup('instagram').done(function (result) {
-        //console.log(result.access_token);        
+        var user = result;        
+        userToken(user);
     }).fail(function (err) {
         alert("Unable to retrieve data from Instagram");
     });
+
 
     var map;
 
@@ -53,13 +55,14 @@ var ViewModel = function () {
         maxWidth: 600
     });
 
-    var markers = [];
+    var markers = ko.observableArray();
+    
+    function userToken(data) {
+        console.log(data);
+    }
 
-    for (var i = 0, len = locations.length; i < len; i++) {
-
-        //var token = result.access_token;
-        var content = "<h4>" + locations[i].name + "</h4>";
-        //console.log(token);
+    for (var i = 0, len = locations.length; i < len; i++) {               
+        
         var marker = new google.maps.Marker({
             position: new google.maps.LatLng(locations[i].lat, locations[i].long),
             map: map,
@@ -70,6 +73,7 @@ var ViewModel = function () {
 
         google.maps.event.addListener(marker, 'click', (function (marker, i) {
             return function () {
+                var content = "<h4>" + locations[i].name + "</h4>";                              
                 infowindow.setContent(content);
                 infowindow.open(map, marker);
             };
