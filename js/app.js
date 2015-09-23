@@ -28,21 +28,20 @@ var locations = [{
         long: -80.8393389
     }
 ];
-
 var ViewModel = function () {
     var self = this;
 
-    OAuth.initialize('B9ST_ARNokhVTwx8qOyw-6UXWI8')
-    OAuth.popup('instagram').done(function (result) {
-        var user = result;        
-        userToken(user);
+    OAuth.initialize('B9ST_ARNokhVTwx8qOyw-6UXWI8');
+    OAuth.popup('instagram', {cache: true}).then(function (oauthResult) {
+        return oauthResult.get('https://api.instagram.com/v1/media/search?lat=35.2284356&lng=-80.8485039');
+    }).then(function (data) {
+        console.log(data);
     }).fail(function (err) {
-        alert("Unable to retrieve data from Instagram");
+        alert('Unable to retrieve data from Instagram');
     });
 
-
+    self.searchString = ko.observable('');
     var map;
-
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
             center: {lat: 35.2251901, lng: -80.8465473},
@@ -50,42 +49,34 @@ var ViewModel = function () {
         });
     }
     initMap();
-
     var infowindow = new google.maps.InfoWindow({
         maxWidth: 600
     });
-
     var markers = ko.observableArray();
-    
-    function userToken(data) {
-        console.log(data);
-    }
+    for (var i = 0, len = locations.length; i < len; i++) {
 
-    for (var i = 0, len = locations.length; i < len; i++) {               
-        
         var marker = new google.maps.Marker({
             position: new google.maps.LatLng(locations[i].lat, locations[i].long),
             map: map,
             animation: google.maps.Animation.DROP
         });
-
         markers.push(marker);
-
         google.maps.event.addListener(marker, 'click', (function (marker, i) {
             return function () {
-                var content = "<h4>" + locations[i].name + "</h4>";                              
+
+                var content = "<h4>" + locations[i].name + "</h4>" +
+                        "<h5>" + locations[i].lat + ", " + locations[i].long + "</h5>";
                 infowindow.setContent(content);
                 infowindow.open(map, marker);
             };
         })(marker, i));
-
         google.maps.event.addListener(marker, 'click', (function (marker) {
             return function () {
                 if (marker.getAnimation() !== null) {
                     marker.setAnimation(null);
                 } else {
                     marker.setAnimation(google.maps.Animation.BOUNCE);
-                    stopAnimation(marker)
+                    stopAnimation(marker);
                 }
                 function stopAnimation(marker) {
                     setTimeout(function () {
@@ -95,9 +86,5 @@ var ViewModel = function () {
             };
         })(marker));
     }
-    ;
-
-    self.searchString = ko.observable('');
 };
-
 ko.applyBindings(ViewModel);
