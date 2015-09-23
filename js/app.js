@@ -35,7 +35,10 @@ var ViewModel = function () {
     OAuth.popup('instagram', {cache: true}).then(function (oauthResult) {
         return oauthResult.get('https://api.instagram.com/v1/media/search?lat=35.2284356&lng=-80.8485039');
     }).then(function (data) {
-        console.log(data);
+        for(var i = 0; i < 5; i++) {
+            console.log(data.data[i].images.low_resolution.url);
+        }
+        
     }).fail(function (err) {
         alert('Unable to retrieve data from Instagram');
     });
