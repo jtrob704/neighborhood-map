@@ -35,7 +35,7 @@ var ViewModel = function () {
     self.searchString = ko.observable('');
     var map;
     function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
+        map = new google.maps.Map(document.getElementById('map-container'), {
             center: {lat: 35.2251901, lng: -80.8465473},
             zoom: 16
         });
