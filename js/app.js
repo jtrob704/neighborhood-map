@@ -31,17 +31,6 @@ var locations = [{
 var ViewModel = function () {
     var self = this;
 
-    OAuth.initialize('B9ST_ARNokhVTwx8qOyw-6UXWI8');
-    OAuth.popup('instagram', {cache: true}).then(function (oauthResult) {
-        return oauthResult.get('https://api.instagram.com/v1/media/search?lat=35.2284356&lng=-80.8485039');
-    }).then(function (data) {
-        for(var i = 0; i < 5; i++) {
-            console.log(data.data[i].images.low_resolution.url);
-        }
-        
-    }).fail(function (err) {
-        alert('Unable to retrieve data from Instagram');
-    });
 
     self.searchString = ko.observable('');
     var map;
@@ -53,6 +42,7 @@ var ViewModel = function () {
     }
     initMap();
     var infowindow = new google.maps.InfoWindow({
+        content: "",
         maxWidth: 600
     });
     var markers = ko.observableArray();
@@ -66,11 +56,21 @@ var ViewModel = function () {
         markers.push(marker);
         google.maps.event.addListener(marker, 'click', (function (marker, i) {
             return function () {
-
-                var content = "<h4>" + locations[i].name + "</h4>" +
-                        "<h5>" + locations[i].lat + ", " + locations[i].long + "</h5>";
-                infowindow.setContent(content);
                 infowindow.open(map, marker);
+                OAuth.initialize('B9ST_ARNokhVTwx8qOyw-6UXWI8');
+                OAuth.popup('instagram', {cache: true}).then(function (oauthResult) {
+                    var instagramAPI = 'https://api.instagram.com/v1/media/search?lat=' + locations[i].lat + "&lng=" + locations[i].long;
+                    return oauthResult.get(instagramAPI);
+                }).then(function (data) {
+                        var content = '<h4>' + locations[i].name + '</h4>' +
+                                '<h5>' + locations[i].lat + ', ' + locations[i].long + '</h5>' +
+                                '<img src="' + data.data[i].images.low_resolution.url + '">';
+                        infowindow.setContent(content);                  
+                }).fail(function (err) {
+                    alert('Unable to retrieve data from Instagram');
+                });
+
+
             };
         })(marker, i));
         google.maps.event.addListener(marker, 'click', (function (marker) {
