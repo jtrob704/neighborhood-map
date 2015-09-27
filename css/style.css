@@ -7,5 +7,23 @@ and open the template in the editor.
     Created on : Sep 5, 2015, 12:47:17 PM
     Author     : jaittariusrobinson
 */
-html, body { height: 100%; margin: 0; padding: 0; }
-#map-container { height: 100%; }
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+#map-container {
+    height: 100%;
+    width: 80%;
+}
+#search-panel {
+    position: absolute;   
+    right: 5%;             
+    font-family: 'Roboto','sans-serif';       
+}
+ul {
+    list-style-type: none;
+}
+input {    
+    width: 100%;
+}

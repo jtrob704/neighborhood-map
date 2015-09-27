@@ -29,6 +29,7 @@ var locations = [{
     }
 ];
 var ViewModel = function () {
+    query: ko.observable('');
     var self = this;
 
 
