@@ -16,13 +16,14 @@ html, body {
     height: 100%;
     width: 80%;
 }
-#search-panel {
+#container {
     position: absolute;   
     right: 5%;             
     font-family: 'Roboto','sans-serif';       
 }
 ul {
     list-style-type: none;
+    text-align: left;
 }
 input {    
     width: 100%;

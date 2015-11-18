@@ -29,11 +29,22 @@ var locations = [{
     }
 ];
 var ViewModel = function () {
-    query: ko.observable('');
-    var self = this;
 
+  this.users = ko.observableArray([]);
+  this.query = ko.observable('');
 
-    self.searchString = ko.observable('');
+  this.search = function(value) {
+    ViewModel.locations.removeAll();
+
+    if (value === '') return;
+
+    for (var location in locations) {
+      if (locations[location].name.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
+        ViewModel.locations.push(locations[location]);
+      }
+    }
+  };
+
     var map;
     function initMap() {
         map = new google.maps.Map(document.getElementById('map-container'), {
@@ -91,4 +102,5 @@ var ViewModel = function () {
         })(marker));
     }
 };
+
 ko.applyBindings(ViewModel);
