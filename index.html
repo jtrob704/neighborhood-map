@@ -7,17 +7,16 @@
         <link rel="stylesheet" href="css/style.css">
         <script src="js/oauth.min.js"></script>
     </head>
+
     <body>
         <div id="container">
             <h1>Locations</h1>
-            <form>
-                <input id="search" type="search" name="search" placeholder="Search..." data-bind="textInput: query"/>
-            </form>
-            
-        <ul data-bind="foreach: locations">
-            <li data-bind="text: name"></li>
-        </ul>
-            
+                <input type="search" placeholder="Location search..." data-bind="textInput: userInput, event: {keyup: filterMarkers}">
+
+            <ul id="list-view" data-bind="foreach: visiblePlaces">
+                <li data-bind="text: locationName"></li>
+            </ul>
+
         </div>
         <div id="map-container">
         </div>
