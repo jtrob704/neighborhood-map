@@ -1,106 +1,125 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-//"use strict";
-
-//Add model data
-var locations = [{
-        name: 'EpiCentre',
-        lat: 35.225372,
-        long: -80.841967
-    }, {
-        name: 'Discovery Place',
-        lat: 35.2295793,
-        long: -80.8411225
-    }, {
-        name: 'BB&T Ballpark',
-        lat: 35.2284356,
-        long: -80.8485039
-    }, {
-        name: 'Bank of America Stadium',
-        lat: 35.2256295,
-        long: -80.8527401
-    }, {
-        name: 'Time Warner Cable Arena',
-        lat: 35.2250475,
-        long: -80.8393389
+var locationData = [
+    {
+        locationName: 'EpiCentre',
+        latLng: {lat: 35.225372, lng: -80.841967}
+    },
+    {
+        locationName: 'Discovery Place',
+        latLng: {lat: 35.2295793, lng: -80.8411225}
+    },
+    {
+        locationName: 'BB&T Ballpark',
+        latLng: {lat: 35.2284356, lng: -80.8485039}
+    },
+    {
+        locationName: 'Bank of America Stadium',
+        latLng: {lat: 35.2256295, lng: -80.8527401}
+    },
+    {
+        locationName: 'Time Warner Cable Arena',
+        latLng: {lat: 35.2250475, lng: -80.8393389}
     }
 ];
-var ViewModel = function () {
 
-  this.users = ko.observableArray([]);
-  this.query = ko.observable('');
 
-  this.search = function(value) {
-    ViewModel.locations.removeAll();
+var KoViewModel = function () {
+    var self = this;
 
-    if (value === '') return;
 
-    for (var location in locations) {
-      if (locations[location].name.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
-        ViewModel.locations.push(locations[location]);
-      }
-    }
-  };
-
-    var map;
-    function initMap() {
-        map = new google.maps.Map(document.getElementById('map-container'), {
-            center: {lat: 35.2251901, lng: -80.8465473},
-            zoom: 16
-        });
-    }
-    initMap();
-    var infowindow = new google.maps.InfoWindow({
-        content: "",
-        maxWidth: 600
+    // Build the Google Map object. Store a reference to it.
+    self.googleMap = new google.maps.Map(document.getElementById('map-container'), {
+        center: {lat: 35.2251901, lng: -80.8465473},
+        zoom: 16
     });
-    var markers = ko.observableArray();
-    for (var i = 0, len = locations.length; i < len; i++) {
 
-        var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(locations[i].lat, locations[i].long),
-            map: map,
+
+
+
+
+    // Build "Place" objects out of raw place data. It is common to receive place
+    // data from an API like FourSquare. Place objects are defined by a custom
+    // constructor function you write, which takes what you need from the original
+    // data and also lets you add on anything else you need for your app, not
+    // limited by the original data.
+    self.allPlaces = [];
+    locationData.forEach(function (place) {
+        self.allPlaces.push(new Place(place));
+    });
+
+
+    // Build Markers via the Maps API and place them on the map.
+    self.allPlaces.forEach(function (place) {
+        var markerOptions = {
+            map: self.googleMap,
+            position: place.latLng,
             animation: google.maps.Animation.DROP
+        };
+
+        place.marker = new google.maps.Marker(markerOptions);
+
+        self.infowindow = new google.maps.InfoWindow({
+            content: "",
+            maxWidth: 600
         });
-        markers.push(marker);
-        google.maps.event.addListener(marker, 'click', (function (marker, i) {
-            return function () {
-                infowindow.open(map, marker);
-                OAuth.initialize('B9ST_ARNokhVTwx8qOyw-6UXWI8');
-                OAuth.popup('instagram', {cache: true}).then(function (oauthResult) {
-                    var instagramAPI = 'https://api.instagram.com/v1/media/search?lat=' + locations[i].lat + "&lng=" + locations[i].long;
-                    return oauthResult.get(instagramAPI);
-                }).then(function (data) {
-                        var content = '<h4>' + locations[i].name + '</h4>' +
-                                '<h5>' + locations[i].lat + ', ' + locations[i].long + '</h5>' +
-                                '<img src="' + data.data[i].images.low_resolution.url + '">';
-                        infowindow.setContent(content);                  
-                }).fail(function (err) {
-                    alert('Unable to retrieve data from Instagram');
-                });
+      
+        // You might also add listeners onto the marker, such as "click" listeners.
+    });
 
 
-            };
-        })(marker, i));
-        google.maps.event.addListener(marker, 'click', (function (marker) {
-            return function () {
-                if (marker.getAnimation() !== null) {
-                    marker.setAnimation(null);
-                } else {
-                    marker.setAnimation(google.maps.Animation.BOUNCE);
-                    stopAnimation(marker);
-                }
-                function stopAnimation(marker) {
-                    setTimeout(function () {
-                        marker.setAnimation(null);
-                    }, 2000);
-                }
-            };
-        })(marker));
+    // This array will contain what its name implies: only the markers that should
+    // be visible based on user input. My solution does not need to use an 
+    // observableArray for this purpose, but other solutions may require that.
+    self.visiblePlaces = ko.observableArray();
+
+
+    // All places should be visible at first. We only want to remove them if the
+    // user enters some input which would filter some of them out.
+    self.allPlaces.forEach(function (place) {
+        self.visiblePlaces.push(place);
+    });
+
+
+    // This, along with the data-bind on the <input> element, lets KO keep 
+    // constant awareness of what the user has entered. It stores the user's 
+    // input at all times.
+    self.userInput = ko.observable('');
+
+
+    // The filter will look at the names of the places the Markers are standing
+    // for, and look at the user input in the search box. If the user input string
+    // can be found in the place name, then the place is allowed to remain 
+    // visible. All other markers are removed.
+    self.filterMarkers = function () {
+        var searchInput = self.userInput().toLowerCase();
+
+        self.visiblePlaces.removeAll();
+
+        // This looks at the name of each places and then determines if the user
+        // input can be found within the place name.
+        self.allPlaces.forEach(function (place) {
+            place.marker.setVisible(false);
+
+            if (place.locationName.toLowerCase().indexOf(searchInput) !== -1) {
+                self.visiblePlaces.push(place);
+            }
+        });
+
+
+        self.visiblePlaces().forEach(function (place) {
+            place.marker.setVisible(true);
+        });
+    };
+
+
+    function Place(dataObj) {
+        this.locationName = dataObj.locationName;
+        this.latLng = dataObj.latLng;
+
+        // You will save a reference to the Places' map marker after you build the
+        // marker:
+        this.marker = null;
     }
+
 };
 
-ko.applyBindings(ViewModel);
+ko.applyBindings(new KoViewModel());
