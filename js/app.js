@@ -46,7 +46,10 @@ var KoViewModel = function () {
         self.allPlaces.push(new Place(place));
     });
 
-
+    var infowindow = new google.maps.InfoWindow({
+        content: "",
+        maxWidth: 600
+    });
     // Build Markers via the Maps API and place them on the map.
     self.allPlaces.forEach(function (place) {
         var markerOptions = {
@@ -57,11 +60,15 @@ var KoViewModel = function () {
 
         place.marker = new google.maps.Marker(markerOptions);
 
-        self.infowindow = new google.maps.InfoWindow({
-            content: "",
-            maxWidth: 600
+
+        google.maps.event.addListener(place.marker, 'click', function () {
+            infowindow.open(self.googleMap, this);
+            place.marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(function () {
+                place.marker.setAnimation(null);
+            }, 1000);
         });
-      
+
         // You might also add listeners onto the marker, such as "click" listeners.
     });
 
