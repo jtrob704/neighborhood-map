@@ -9,15 +9,15 @@
     </head>
 
     <body>
-        <div id="container">
+        
             <h1>Locations</h1>
                 <input type="search" placeholder="Location search..." data-bind="textInput: userInput, event: {keyup: filterMarkers}">
-
+                <div id="list-holder">
             <ul id="list-view" data-bind="foreach: visiblePlaces">
-                <li data-bind="text: locationName"></li>
+                <li id="list-name" data-bind="text: locationName, click: $parent.showInfo"></li>
             </ul>
-
-        </div>
+                </div>
+        
         <div id="map-container">
         </div>
         <script src="js/knockout-3.3.0.js"></script>

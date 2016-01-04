@@ -21,6 +21,10 @@ var locationData = [
     }
 ];
 
+var Place = function (data) {
+    this.imagesUrl = ko.observable(data.images.low_resolution.url);
+    
+};
 
 var KoViewModel = function () {
     var self = this;
@@ -67,12 +71,32 @@ var KoViewModel = function () {
             setTimeout(function () {
                 place.marker.setAnimation(null);
             }, 1000);
-        });
+            
+            
+            OAuth.initialize('B9ST_ARNokhVTwx8qOyw-6UXWI8');
+            OAuth.popup('instagram', {cache: true}).then(function (oauthResult) {
+                var instagramAPI = 'https://api.instagram.com/v1/media/search?lat=' + place.latLng.lat + "&lng=" + place.latLng.lng;
+                return oauthResult.get(instagramAPI);
+            }).then(function (data) {
+                console.log(data);
 
-        // You might also add listeners onto the marker, such as "click" listeners.
+                var content = '<h1>' + place.locationName + '</h1>' +
+                        '<h3>' + place.latLng.lat + ', ' + place.latLng.lng;
+
+                infowindow.setContent(content);
+               
+            }).fail(function (err) {
+                alert('Unable to retrieve data from Instagram');
+            });
+
+        });
     });
 
-
+    self.showInfo = function (placeItem) {
+        google.maps.event.trigger(placeItem.marker, 'click');
+        //self.hideElements();
+    };
+    
     // This array will contain what its name implies: only the markers that should
     // be visible based on user input. My solution does not need to use an 
     // observableArray for this purpose, but other solutions may require that.
