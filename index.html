@@ -14,7 +14,7 @@
                 <input type="search" placeholder="Location search..." data-bind="textInput: userInput, event: {keyup: filterMarkers}">
                 <div id="list-holder">
             <ul id="list-view" data-bind="foreach: visiblePlaces">
-                <li id="list-name" data-bind="text: locationName, click: $parent.showInfo"></li>
+                <li id="list-name" data-bind="text: name, click: $parent.showInfo"></li>
             </ul>
                 </div>
         
