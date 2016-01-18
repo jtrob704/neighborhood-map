@@ -38,7 +38,7 @@ function googleError() {
 
 var Place = function (data) {
     "use strict";
-    this.name = ko.observable(data.name);
+    this.locationName = ko.observable(data.locationName);
     this.lat = ko.observable(data.lat);
     this.lng = ko.observable(data.lng);
     this.id = ko.observable(data.id);
@@ -79,12 +79,12 @@ var KoViewModel = function () {
     self.allPlaces.forEach(function (place) {
         var markerOptions = {
             map: self.googleMap,
-            position: place.latLng,
+            position: new google.maps.LatLng(place.lat(), place.lng()),
             animation: google.maps.Animation.DROP
         };
         place.marker = new google.maps.Marker(markerOptions);
         $.ajax({
-            url: 'https://api.foursquare.com/v2/venues/' + place.id +
+            url: 'https://api.foursquare.com/v2/venues/' + place.id() +
                     '?client_id=2EPTHEHMQCM0PMFHXGWP5QSVM5W1LMPT3L5UL1V3PAAE1E0T&client_secret=YGSM3XHOJLJICSCP4CG3KUHQKCH4ZDWD0UIBDBC54SQQQGA0&v=20130815',
             dataType: "json",
             success: function (data) {
@@ -116,7 +116,7 @@ var KoViewModel = function () {
                 var url = result.hasOwnProperty('url') ? result.url : '';
                 place.url(url || '');
                 place.canonicalUrl(result.canonicalUrl);
-                var content = '<div id="iWindow"><h4>' + place.name() + '</h4><div id="pic"><img src="' +
+                var content = '<div id="iWindow"><h4>' + place.locationName() + '</h4><div id="pic"><img src="' +
                         place.photoPrefix() + '110x110' + place.photoSuffix() +
                         '" alt="Image Location"></div><p>Information from Foursquare:</p><p>' +
                         place.phone() + '</p><p>' + place.address() + '</p><p>' +
@@ -168,7 +168,7 @@ var KoViewModel = function () {
         // input can be found within the place name.
         self.allPlaces.forEach(function (place) {
             place.marker.setVisible(false);
-            if (place.name().toLowerCase().indexOf(searchInput) !== -1) {
+            if (place.locationName().toLowerCase().indexOf(searchInput) !== -1) {
                 self.visiblePlaces.push(place);
             }
         });
@@ -176,15 +176,5 @@ var KoViewModel = function () {
             place.marker.setVisible(true);
         });
     };
-    
-      function Place(dataObj) {
-    this.locationName = dataObj.locationName;
-    this.latLng = dataObj.latLng;
-    
-    // You will save a reference to the Places' map marker after you build the
-    // marker:
-    this.marker = null;
-  }
-  
 };
 ko.applyBindings(new KoViewModel());    
