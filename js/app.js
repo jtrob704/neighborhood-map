@@ -73,7 +73,7 @@ var KoViewModel = function () {
     });
     var infowindow = new google.maps.InfoWindow({
         content: "",
-        maxWidth: 600
+        maxWidth: 300
     });
     // Build Markers via the Maps API and place them on the map.
     self.allPlaces.forEach(function (place) {
@@ -142,8 +142,28 @@ var KoViewModel = function () {
     });
     self.showInfo = function (place) {
         google.maps.event.trigger(place.marker, 'click');
-        //self.hideElements();
+        self.hideElements();
     };
+
+    // Toggle the nav class based style
+    // Credit Stacy https://discussions.udacity.com/t/any-way-to-reduce-infowindow-content-on-mobile/40352/25
+    self.toggleNav = ko.observable(false);
+    this.navStatus = ko.pureComputed(function () {
+        return self.toggleNav() === false ? 'nav' : 'navClosed';
+    }, this);
+
+    self.hideElements = function (toggleNav) {
+        self.toggleNav(true);
+        // Allow default action
+        // Credit Stacy https://discussions.udacity.com/t/click-binding-blocking-marker-clicks/35398/2
+        return true;
+    };
+
+    self.showElements = function (toggleNav) {
+        self.toggleNav(false);
+        return true;
+    };
+
     // This array will contain what its name implies: only the markers that should
     // be visible based on user input. My solution does not need to use an 
     // observableArray for this purpose, but other solutions may require that.
