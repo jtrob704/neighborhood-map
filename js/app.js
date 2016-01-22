@@ -36,7 +36,8 @@ function initMap() {
     "use strict";
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 35.2251901, lng: -80.8465473},
-        zoom: 16
+        zoom: 16,
+        disableDefaultUI: true
     });
 
     ko.applyBindings(new KoViewModel());
