@@ -34,16 +34,16 @@ var locationData = [
 var map;
 function initMap() {
     "use strict";
-    map = new google.maps.Map(document.getElementById('map-container'), {
+    map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 35.2251901, lng: -80.8465473},
         zoom: 16
     });
-    
-    ko.applyBindings(new KoViewModel());    
+
+    ko.applyBindings(new KoViewModel());
 }
 function googleError() {
     "use strict";
-    document.getElementById('map-container').innerHTML = "<h2>Google Maps is not loading. Please try refreshing the page later.</h2>";
+    document.getElementById('map').innerHTML = "<h2>Google Maps is not loading. Please try refreshing the page later.</h2>";
 }
 
 var Place = function (data) {
@@ -171,7 +171,7 @@ var KoViewModel = function () {
     };
 
     // This array will contain what its name implies: only the markers that should
-    // be visible based on user input. My solution does not need to use an 
+    // be visible based on user input. My solution does not need to use an
     // observableArray for this purpose, but other solutions may require that.
     self.visiblePlaces = ko.observableArray();
     // All places should be visible at first. We only want to remove them if the
@@ -179,13 +179,13 @@ var KoViewModel = function () {
     self.allPlaces.forEach(function (place) {
         self.visiblePlaces.push(place);
     });
-    // This, along with the data-bind on the <input> element, lets KO keep 
-    // constant awareness of what the user has entered. It stores the user's 
+    // This, along with the data-bind on the <input> element, lets KO keep
+    // constant awareness of what the user has entered. It stores the user's
     // input at all times.
     self.userInput = ko.observable('');
     // The filter will look at the names of the places the Markers are standing
     // for, and look at the user input in the search box. If the user input string
-    // can be found in the place name, then the place is allowed to remain 
+    // can be found in the place name, then the place is allowed to remain
     // visible. All other markers are removed.
     self.filterMarkers = function () {
         var searchInput = self.userInput().toLowerCase();
