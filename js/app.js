@@ -31,6 +31,16 @@ var locationData = [
     }
 ];
 
+var map;
+function initMap() {
+    "use strict";
+    map = new google.maps.Map(document.getElementById('map-container'), {
+        center: {lat: 35.2251901, lng: -80.8465473},
+        zoom: 16
+    });
+    
+    ko.applyBindings(new KoViewModel());    
+}
 function googleError() {
     "use strict";
     document.getElementById('map-container').innerHTML = "<h2>Google Maps is not loading. Please try refreshing the page later.</h2>";
@@ -57,11 +67,7 @@ var Place = function (data) {
 var KoViewModel = function () {
     "use strict";
     var self = this;
-    // Build the Google Map object. Store a reference to it.
-    self.googleMap = new google.maps.Map(document.getElementById('map-container'), {
-        center: {lat: 35.2251901, lng: -80.8465473},
-        zoom: 16
-    });
+
     // Build "Place" objects out of raw place data. It is common to receive place
     // data from an API like FourSquare. Place objects are defined by a custom
     // constructor function you write, which takes what you need from the original
@@ -78,7 +84,7 @@ var KoViewModel = function () {
     // Build Markers via the Maps API and place them on the map.
     self.allPlaces.forEach(function (place) {
         var markerOptions = {
-            map: self.googleMap,
+            map: map,
             position: new google.maps.LatLng(place.lat(), place.lng()),
             animation: google.maps.Animation.DROP
         };
@@ -126,7 +132,7 @@ var KoViewModel = function () {
                         '>Foursquare Page</a></p><p><a target="_blank" href=https://www.google.com/maps/dir/Current+Location/' +
                         place.lat() + ',' + place.lng() + '>Directions</a></p></div>';
                 google.maps.event.addListener(place.marker, 'click', function () {
-                    infowindow.open(self.googleMap, this);
+                    infowindow.open(map, this);
                     place.marker.setAnimation(google.maps.Animation.BOUNCE);
                     setTimeout(function () {
                         place.marker.setAnimation(null);
@@ -197,4 +203,3 @@ var KoViewModel = function () {
         });
     };
 };
-ko.applyBindings(new KoViewModel());    
