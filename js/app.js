@@ -1,3 +1,4 @@
+// JSON daya for locations
 var locationData = [
     {
         locationName: 'EpiCentre',
@@ -31,6 +32,7 @@ var locationData = [
     }
 ];
 
+//Intialize map
 var map;
 function initMap() {
     "use strict";
@@ -42,11 +44,14 @@ function initMap() {
 
     ko.applyBindings(new KoViewModel());
 }
+
+// Called if app is ubable to load Maps API
 function googleError() {
     "use strict";
     document.getElementById('map').innerHTML = "<h2>Google Maps is not loading. Please try refreshing the page later.</h2>";
 }
 
+// Create Place constructor to allow access to Foursqayre API data outside of ajax call
 var Place = function (data) {
     "use strict";
     this.locationName = ko.observable(data.locationName);
@@ -69,19 +74,18 @@ var KoViewModel = function () {
     "use strict";
     var self = this;
 
-    // Build "Place" objects out of raw place data. It is common to receive place
-    // data from an API like FourSquare. Place objects are defined by a custom
-    // constructor function you write, which takes what you need from the original
-    // data and also lets you add on anything else you need for your app, not
-    // limited by the original data.
+// Load data for each location into Place constructor
     self.allPlaces = [];
     locationData.forEach(function (place) {
         self.allPlaces.push(new Place(place));
     });
+
+// Initialize infowindow
     var infowindow = new google.maps.InfoWindow({
         content: "",
         maxWidth: 300
     });
+
     // Build Markers via the Maps API and place them on the map.
     self.allPlaces.forEach(function (place) {
         var markerOptions = {
@@ -90,12 +94,14 @@ var KoViewModel = function () {
             animation: google.maps.Animation.DROP
         };
         place.marker = new google.maps.Marker(markerOptions);
+
+        // Make ajax call to Foursqaure API
         $.ajax({
             url: 'https://api.foursquare.com/v2/venues/' + place.id() +
                     '?client_id=2EPTHEHMQCM0PMFHXGWP5QSVM5W1LMPT3L5UL1V3PAAE1E0T&client_secret=YGSM3XHOJLJICSCP4CG3KUHQKCH4ZDWD0UIBDBC54SQQQGA0&v=20130815',
             dataType: "json",
             success: function (data) {
-                // Make results easier to handle
+                // Format raw Foursqaure API data into a more radable and consistent format
                 var result = data.response.venue;
                 var contact = result.hasOwnProperty('contact') ? result.contact : '';
                 if (contact.hasOwnProperty('formattedPhone')) {
@@ -123,6 +129,7 @@ var KoViewModel = function () {
                 var url = result.hasOwnProperty('url') ? result.url : '';
                 place.url(url || '');
                 place.canonicalUrl(result.canonicalUrl);
+                // Format and set content for infowindow
                 var content = '<div id="iWindow"><h4>' + place.locationName() + '</h4><div id="pic"><img src="' +
                         place.photoPrefix() + '110x110' + place.photoSuffix() +
                         '" alt="Image Location"></div><p>Information from Foursquare:</p><p>' +
@@ -132,6 +139,7 @@ var KoViewModel = function () {
                         '</a></p><p><a target="_blank" href=' + place.canonicalUrl() +
                         '>Foursquare Page</a></p><p><a target="_blank" href=https://www.google.com/maps/dir/Current+Location/' +
                         place.lat() + ',' + place.lng() + '>Directions</a></p></div>';
+                // Click listener for Map markers
                 google.maps.event.addListener(place.marker, 'click', function () {
                     infowindow.open(map, this);
                     place.marker.setAnimation(google.maps.Animation.BOUNCE);
@@ -141,19 +149,20 @@ var KoViewModel = function () {
                     infowindow.setContent(content);
                 });
             },
+            // Print error message in the event ajax API call to Foursquare fails
             error: function (e) {
                 infowindow.setContent('<h5>Foursquare data is unavailable. Please try refreshing later.</h5>');
                 document.getElementById("error").innerHTML = "<h4>Foursquare data is unavailable. Please try refreshing later.</h4>";
             }
         });
     });
+
+    // Click listener for list items
     self.showInfo = function (place) {
         google.maps.event.trigger(place.marker, 'click');
         self.hideElements();
     };
 
-    // Toggle the nav class based style
-    // Credit Stacy https://discussions.udacity.com/t/any-way-to-reduce-infowindow-content-on-mobile/40352/25
     self.toggleNav = ko.observable(false);
     this.navStatus = ko.pureComputed(function () {
         return self.toggleNav() === false ? 'nav' : 'navClosed';
@@ -161,8 +170,6 @@ var KoViewModel = function () {
 
     self.hideElements = function (toggleNav) {
         self.toggleNav(true);
-        // Allow default action
-        // Credit Stacy https://discussions.udacity.com/t/click-binding-blocking-marker-clicks/35398/2
         return true;
     };
 
@@ -171,23 +178,18 @@ var KoViewModel = function () {
         return true;
     };
 
-    // This array will contain what its name implies: only the markers that should
-    // be visible based on user input. My solution does not need to use an
-    // observableArray for this purpose, but other solutions may require that.
+    // This array will contains only the markers that should be visible based on user input
     self.visiblePlaces = ko.observableArray();
-    // All places should be visible at first. We only want to remove them if the
-    // user enters some input which would filter some of them out.
+
+    // Make all locations visible at first
     self.allPlaces.forEach(function (place) {
         self.visiblePlaces.push(place);
     });
-    // This, along with the data-bind on the <input> element, lets KO keep
-    // constant awareness of what the user has entered. It stores the user's
-    // input at all times.
+
+    // Store user input
     self.userInput = ko.observable('');
-    // The filter will look at the names of the places the Markers are standing
-    // for, and look at the user input in the search box. If the user input string
-    // can be found in the place name, then the place is allowed to remain
-    // visible. All other markers are removed.
+
+    // Filter marker based on user input
     self.filterMarkers = function () {
         var searchInput = self.userInput().toLowerCase();
         self.visiblePlaces.removeAll();

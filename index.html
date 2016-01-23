@@ -13,11 +13,11 @@
             <div class="row">
                 <div class="search-list">
                     <h3>Downtown Charlotte</h3>
-                    <input id="search" placeholder="Location search..." data-bind="textInput: userInput, event: {keyup: filterMarkers}">                    
-                        <ul id="listPlaces" data-bind="foreach: visiblePlaces">
-                            <li id="list-name" data-bind="text: locationName, click: $parent.showInfo"></li>
-                        </ul>
-                    </div>                
+                    <input id="search" placeholder="Location search..." data-bind="textInput: userInput, event: {keyup: filterMarkers}">
+                    <ul id="listPlaces" data-bind="foreach: visiblePlaces">
+                        <li id="list-name" data-bind="text: locationName, click: $parent.showInfo"></li>
+                    </ul>
+                </div>
                 <div class="col-md-10" id="map-container">
                     <div id="map"></div>
                 </div>
