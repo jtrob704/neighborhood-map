@@ -1,4 +1,4 @@
-// JSON daya for locations
+// JSON data for locations
 var locationData = [
     {
         locationName: 'EpiCentre',
@@ -32,7 +32,7 @@ var locationData = [
     }
 ];
 
-//Intialize map
+//Initialize map
 var map;
 function initMap() {
     "use strict";
@@ -45,13 +45,14 @@ function initMap() {
     ko.applyBindings(new KoViewModel());
 }
 
-// Called if app is ubable to load Maps API
+// Called if app is unable to load Maps API
 function googleError() {
     "use strict";
-    document.getElementById('map').innerHTML = "<h2>Google Maps is not loading. Please try refreshing the page later.</h2>";
+    bootbox.alert("Unable to load Google Maps. Please try again later", function () {
+    });
 }
 
-// Create Place constructor to allow access to Foursqayre API data outside of ajax call
+// Create Place constructor to allow access to Foursquare API data outside of ajax call
 var Place = function (data) {
     "use strict";
     this.locationName = ko.observable(data.locationName);
@@ -86,14 +87,23 @@ var KoViewModel = function () {
         maxWidth: 300
     });
 
+    var bounds = new google.maps.LatLngBounds();
     // Build Markers via the Maps API and place them on the map.
     self.allPlaces.forEach(function (place) {
+        var myLatLng = new google.maps.LatLng(place.lat(), place.lng());
         var markerOptions = {
             map: map,
-            position: new google.maps.LatLng(place.lat(), place.lng()),
+            position: myLatLng,
             animation: google.maps.Animation.DROP
         };
         place.marker = new google.maps.Marker(markerOptions);
+        bounds.extend(myLatLng);
+
+        window.onresize = function () {
+            map.fitBounds(bounds);
+        }
+
+
 
         // Make ajax call to Foursqaure API
         $.ajax({
@@ -101,7 +111,7 @@ var KoViewModel = function () {
                     '?client_id=2EPTHEHMQCM0PMFHXGWP5QSVM5W1LMPT3L5UL1V3PAAE1E0T&client_secret=YGSM3XHOJLJICSCP4CG3KUHQKCH4ZDWD0UIBDBC54SQQQGA0&v=20130815',
             dataType: "json",
             success: function (data) {
-                // Format raw Foursqaure API data into a more radable and consistent format
+                // Format raw Foursquare API data into a more readable and consistent format
                 var result = data.response.venue;
                 var contact = result.hasOwnProperty('contact') ? result.contact : '';
                 if (contact.hasOwnProperty('formattedPhone')) {
@@ -141,23 +151,25 @@ var KoViewModel = function () {
                         place.lat() + ',' + place.lng() + '>Directions</a></p></div>';
                 // Click listener for Map markers
                 google.maps.event.addListener(place.marker, 'click', function () {
+                    map.setCenter(myLatLng);
+                    infowindow.close();
                     infowindow.open(map, this);
                     place.marker.setAnimation(google.maps.Animation.BOUNCE);
                     setTimeout(function () {
                         place.marker.setAnimation(null);
-                    }, 1000);
+                    }, 2100);
                     infowindow.setContent(content);
                 });
             },
             // Print error message in the event ajax API call to Foursquare fails
             error: function (e) {
-                infowindow.setContent('<h5>Foursquare data is unavailable. Please try refreshing later.</h5>');
-                document.getElementById("error").innerHTML = "<h4>Foursquare data is unavailable. Please try refreshing later.</h4>";
+                bootbox.alert("Unable to retrieve data from Foursquare. Please try again later", function () {
+                });
             }
         });
     });
 
-    // Click listener for list items
+    // Click listener for list items. Credit: http://codepen.io/prather-mcs/pen/KpjbNN
     self.showInfo = function (place) {
         google.maps.event.trigger(place.marker, 'click');
         self.hideElements();

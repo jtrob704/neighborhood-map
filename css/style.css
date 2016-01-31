@@ -24,7 +24,7 @@ body {
 }
 
 #map-container {
-    height: 800px;
+    height: 100vh;
     max-width: 100%;
 }
 
