@@ -14,7 +14,19 @@ body {
     padding: 0;
 }
 
-.container{
+h3 {
+    margin: 20px;
+}
+
+input {
+    margin: 10px;
+}
+
+li {
+    list-style-type: none;
+}
+
+.container {
     width: 100%;
     margin: 0;
 }
@@ -28,10 +40,10 @@ body {
     max-width: 100%;
 }
 
-.search-list {
+.dropdown {
     position: absolute;
     margin-top: 50px;
-    margin-left: 19px;
+    margin-left: 15px;
     background: white;
     float: left;
     z-index: 1;
