@@ -1,3 +1,5 @@
+"use strict";
+
 // JSON data for locations
 var locationData = [
     {
@@ -35,10 +37,9 @@ var locationData = [
 //Initialize map
 var map;
 function initMap() {
-    "use strict";
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 35.2251901, lng: -80.8465473},
-        zoom: 16,
+        zoom: 14,
         disableDefaultUI: true
     });
 
@@ -47,14 +48,13 @@ function initMap() {
 
 // Called if app is unable to load Maps API
 function googleError() {
-    "use strict";
     bootbox.alert("Unable to load Google Maps. Please try again later", function () {
     });
 }
 
 // Create Place constructor to allow access to Foursquare API data outside of ajax call
 var Place = function (data) {
-    "use strict";
+
     this.locationName = ko.observable(data.locationName);
     this.lat = ko.observable(data.lat);
     this.lng = ko.observable(data.lng);
@@ -72,9 +72,8 @@ var Place = function (data) {
 };
 
 var KoViewModel = function () {
-    "use strict";
-    var self = this;
 
+    var self = this;
 // Load data for each location into Place constructor
     self.allPlaces = [];
     locationData.forEach(function (place) {
@@ -84,7 +83,7 @@ var KoViewModel = function () {
 // Initialize infowindow
     var infowindow = new google.maps.InfoWindow({
         content: "",
-        maxWidth: 300
+        maxWidth: 200
     });
 
     var bounds = new google.maps.LatLngBounds();
@@ -98,12 +97,6 @@ var KoViewModel = function () {
         };
         place.marker = new google.maps.Marker(markerOptions);
         bounds.extend(myLatLng);
-
-        window.onresize = function () {
-            map.fitBounds(bounds);
-        }
-
-
 
         // Make ajax call to Foursqaure API
         $.ajax({
@@ -153,6 +146,7 @@ var KoViewModel = function () {
                 google.maps.event.addListener(place.marker, 'click', function () {
                     map.setCenter(myLatLng);
                     infowindow.close();
+                    map.panBy(-100, -400);
                     infowindow.open(map, this);
                     place.marker.setAnimation(google.maps.Animation.BOUNCE);
                     setTimeout(function () {
@@ -160,6 +154,17 @@ var KoViewModel = function () {
                     }, 2100);
                     infowindow.setContent(content);
                 });
+                //Click listener to center map on infowindow close
+                google.maps.event.addListener(infowindow, 'closeclick', function () {
+                    map.setCenter(myLatLng);
+                    map.fitBounds(bounds);
+                });
+
+                //Center map and fitbounds on resize
+                window.onresize = function () {
+                    map.setCenter(myLatLng);
+                    map.fitBounds(bounds);
+                };
             },
             // Print error message in the event ajax API call to Foursquare fails
             error: function (e) {

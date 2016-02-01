@@ -43,8 +43,8 @@ li {
 
 .dropdown {
     position: absolute;
-    margin-top: 50px;
-    margin-left: 15px;
+    margin-top: 10px;
+    margin-left: 5px;
     background: white;
     float: left;
     z-index: 1;
