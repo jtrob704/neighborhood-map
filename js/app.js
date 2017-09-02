@@ -52,7 +52,9 @@ function googleError() {
     });
 }
 
-// Create Place constructor to allow access to Foursquare API data outside of ajax call
+/* Setup a constructor to store API data and make it available outside AJAX call.
+ * Based on code from Udacity forum https://discussions.udacity.com/t/having-trouble-accessing-data-outside-an-ajax-request/39072
+ */
 var Place = function (data) {
 
     this.locationName = ko.observable(data.locationName);
@@ -98,7 +100,10 @@ var KoViewModel = function () {
         place.marker = new google.maps.Marker(markerOptions);
         bounds.extend(myLatLng);
 
-        // Make ajax call to Foursqaure API
+        /* Make ajax call to Foursqaure API
+         * 
+         * Based on Foursquare code from Udacity forum https://discussions.udacity.com/t/foursquare-results-undefined-until-the-second-click-on-infowindow/39673
+         */
         $.ajax({
             url: 'https://api.foursquare.com/v2/venues/' + place.id() +
                     '?client_id=2EPTHEHMQCM0PMFHXGWP5QSVM5W1LMPT3L5UL1V3PAAE1E0T&client_secret=YGSM3XHOJLJICSCP4CG3KUHQKCH4ZDWD0UIBDBC54SQQQGA0&v=20130815',
@@ -135,13 +140,13 @@ var KoViewModel = function () {
                 // Format and set content for infowindow
                 var content = '<div id="iWindow"><h4>' + place.locationName() + '</h4><div id="pic"><img src="' +
                         place.photoPrefix() + '110x110' + place.photoSuffix() +
-                        '" alt="Image Location"></div><p>Information from Foursquare:</p><p>' +
-                        place.phone() + '</p><p>' + place.address() + '</p><p>' +
-                        place.description() + '</p><p>Rating: ' + place.rating() +
-                        '</p><p><a href=' + place.url() + '>' + place.url() +
-                        '</a></p><p><a target="_blank" href=' + place.canonicalUrl() +
-                        '>Foursquare Page</a></p><p><a target="_blank" href=https://www.google.com/maps/dir/Current+Location/' +
-                        place.lat() + ',' + place.lng() + '>Directions</a></p></div>';
+                        '" alt="Image Location"></div><p>Information from Foursquare:</br>' +
+                        place.phone() + '</br>' + place.address() + '</br>' +
+                        place.description() + '</br>Rating: ' + place.rating() +
+                        '</br><a href=' + place.url() + '>' + place.url() +
+                        '</a></br><a target="_blank" href=' + place.canonicalUrl() +
+                        '>Foursquare Page</a></br><a target="_blank" href=https://www.google.com/maps/dir/Current+Location/' +
+                        place.lat() + ',' + place.lng() + '>Directions</a></br></div>';
                 // Click listener for Map markers
                 google.maps.event.addListener(place.marker, 'click', function () {
                     map.setCenter(myLatLng);
@@ -206,7 +211,10 @@ var KoViewModel = function () {
     // Store user input
     self.userInput = ko.observable('');
 
-    // Filter marker based on user input
+    /* Filter marker based on user input
+     * 
+     * Based on code Map Marker filtering code from: https://codepen.io/prather-mcs/pen/KpjbNN?editors=001
+     */
     self.filterMarkers = function () {
         var searchInput = self.userInput().toLowerCase();
         self.visiblePlaces.removeAll();
