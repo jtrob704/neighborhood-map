@@ -1,5 +1,3 @@
-"use strict";
-
 // JSON data for locations
 var locationData = [
     {
